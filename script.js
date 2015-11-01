@@ -20,18 +20,18 @@ $(function() {
 			lineWrapping: lineWrapping
 		});
 	}
-
-	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
-		var url = tabs[0].url;
+	
+	function init_editor(tab, config) {
+		var url = tab.url;
 		var host = get_hostname(url);
 
 		var width;
 		var fontsize;
 
-		fontsize = localStorage['fontsize'];
+		fontsize = config['fontsize'];
 
-		if(localStorage['width'] != '' && localStorage['width'] < 781 && localStorage['width'] > 449) {
-			width = localStorage['width'];
+		if(config['width'] != '' && config['width'] < 781 && config['width'] > 449) {
+			width = config['width'];
 		} else {
 			width = '600';
 		}
@@ -41,20 +41,21 @@ $(function() {
 
 		$('body').prepend('<div class="host">Styler for <a href="' + host + '">' + host + '</a></div>');
 
-		$('.css').val(localStorage[host + '-css']);
-		$('.js').val(localStorage[host + '-js']);
+		$('.css').val(config[host + '-css']);
+		$('.js').val(config[host + '-js']);
 
 		$(document).on('keyup change', function() {
 			jsCM.save();
 			cssCM.save();
-			localStorage[host + '-css'] = $('.css').val();
-			localStorage[host + '-js'] = $('.js').val();
-			localStorage['width'] = $('.width').val();
-			localStorage['fontsize'] = $('.fontsize').val();
-			executeScripts(null, 
+			config[host + '-css'] = $('.css').val();
+			config[host + '-js'] = $('.js').val();
+			config['width'] = $('.width').val();
+			config['fontsize'] = $('.fontsize').val();
+			save_config(config);
+			executeScripts(null,
 				[
-					{ code: "var css = '"+ addslashes(localStorage[host + '-css'].replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
-					{ code: "var js = '"+ addslashes(localStorage[host + '-js'].replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+					{ code: "var css = '"+ addslashes((config[host + '-css'] || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+					{ code: "var js = '"+ addslashes((config[host + '-js'] || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
 					{ file: "jquery.js", runAt: 'document_start' },
 					{ file: "styler.js", runAt: 'document_start' }
 				]
@@ -63,7 +64,7 @@ $(function() {
 
 		var lineWrapping = false;
 
-		if(localStorage['wrap'] == 1) {
+		if(config['wrap'] == 1) {
 			$('.wrap').prop('checked', true);
 			lineWrapping = true;
 		}
@@ -72,18 +73,24 @@ $(function() {
 			jsCM.toTextArea();
 			cssCM.toTextArea();
 			if($('.wrap:checked').length > 0) {
-				localStorage['wrap'] = 1;
+				config['wrap'] = 1;
 				lineWrapping = true;
 			} else {
-				localStorage['wrap'] = 0;
+				config['wrap'] = 0;
 				lineWrapping = false;
 			}
+			save_config(config);
 			init_codemirror(lineWrapping);
 		});
 
 		init_codemirror(lineWrapping);
 		$('.codeMirror').css('font-size', fontsize);
-
+	}
+	
+	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
+		with_config(function (config) {
+			init_editor(tabs[0], config);
+		});
 	});
 
 });

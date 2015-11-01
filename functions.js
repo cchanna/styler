@@ -25,3 +25,13 @@ function cl(data) {
 function get_hostname(url) {
 	return url.toString().replace(/^(.*\/\/[^\/?#]*).*$/,"$1");
 }
+
+function with_config(fn) {
+	chrome.storage.sync.get(null, function (config) {
+		fn(config || {});
+	});
+}
+
+function save_config(config) {
+	chrome.storage.sync.set(config);
+}
