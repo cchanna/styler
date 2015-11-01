@@ -27,11 +27,25 @@ function get_hostname(url) {
 }
 
 function with_config(fn) {
-	chrome.storage.sync.get(null, function (config) {
-		fn(config || {});
+	chrome.storage.sync.get('config', function (values) {
+		fn(values.config || {});
 	});
 }
 
 function save_config(config) {
-	chrome.storage.sync.set(config);
+	chrome.storage.sync.set({config: config});
+}
+
+function with_settings(hostname, fn) {
+	chrome.storage.sync.get(hostname, function (values) {
+		fn(values[hostname] || {});
+	});
+}
+
+function save_settings(hostname, settings) {
+	var values = {};
+
+	values[hostname] = settings;
+
+	chrome.storage.sync.set(values);
 }

@@ -21,10 +21,7 @@ $(function() {
 		});
 	}
 	
-	function init_editor(tab, config) {
-		var url = tab.url;
-		var host = get_hostname(url);
-
+	function init_editor(host, config, settings) {
 		var width;
 		var fontsize;
 
@@ -41,21 +38,22 @@ $(function() {
 
 		$('body').prepend('<div class="host">Styler for <a href="' + host + '">' + host + '</a></div>');
 
-		$('.css').val(config[host + '-css']);
-		$('.js').val(config[host + '-js']);
+		$('.css').val(settings.css);
+		$('.js').val(settings.js);
 
 		$(document).on('keyup change', function() {
 			jsCM.save();
 			cssCM.save();
-			config[host + '-css'] = $('.css').val();
-			config[host + '-js'] = $('.js').val();
+			settings.css = $('.css').val();
+			settings.js = $('.js').val();
 			config['width'] = $('.width').val();
 			config['fontsize'] = $('.fontsize').val();
 			save_config(config);
+			save_settings(host, settings);
 			executeScripts(null,
 				[
-					{ code: "var css = '"+ addslashes((config[host + '-css'] || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
-					{ code: "var js = '"+ addslashes((config[host + '-js'] || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+					{ code: "var css = '"+ addslashes((settings.css || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+					{ code: "var js = '"+ addslashes((settings.js || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
 					{ file: "jquery.js", runAt: 'document_start' },
 					{ file: "styler.js", runAt: 'document_start' }
 				]
@@ -88,8 +86,13 @@ $(function() {
 	}
 	
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
+		var url = tabs[0].url;
+		var host = get_hostname(url);
+
 		with_config(function (config) {
-			init_editor(tabs[0], config);
+			with_settings(host, function (settings) {
+				init_editor(host, config, settings);
+			});
 		});
 	});
 
