@@ -37,8 +37,16 @@ function save_config(config) {
 }
 
 function with_settings(hostname, fn) {
+	function load_legacy_settings() {
+		if (localStorage[hostname + '-js'] || localStorage[hostname + '-css']) {
+			return {
+				js: localStorage[hostname + '-js'],
+				css: localStorage[hostname + '-css']
+			};
+		}
+	}
 	chrome.storage.sync.get(hostname, function (values) {
-		fn(values[hostname] || {});
+		fn(values[hostname] || load_legacy_settings() || {});
 	});
 }
 
