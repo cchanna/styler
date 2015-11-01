@@ -9,6 +9,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 	var url = tab.url;
+
+	if (! /^https?.*$/.test(url)) {
+		return; // ignore non-http(s) schemes (including "chrome://")
+	}
+
 	var host = get_hostname(url);
 
 	with_settings(host, function (settings) {
