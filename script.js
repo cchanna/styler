@@ -52,8 +52,8 @@ $(function() {
 			save_settings(host, settings);
 			executeScripts(null,
 				[
-					{ code: "var css = '"+ addslashes((settings.css || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
-					{ code: "var js = '"+ addslashes((settings.js || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+					{ code: "var css = atob('"+ btoa(localStorage[host + '-css']) +"');", runAt: 'document_start' },
+					{ code: "var js = atob('"+ btoa(localStorage[host + '-js']) +"');", runAt: 'document_start' },
 					{ file: "jquery.js", runAt: 'document_start' },
 					{ file: "styler.js", runAt: 'document_start' }
 				]
