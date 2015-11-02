@@ -9,14 +9,21 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 	var url = tab.url;
-	var host = get_hostname(url);
-	executeScripts(tabId, 
-		[
-			{ code: "var css = '"+ addslashes(localStorage[host + '-css'].replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
-			{ code: "var js = '"+ addslashes(localStorage[host + '-js'].replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
-			{ file: "jquery.js", runAt: 'document_start' },
-			{ file: "styler.js", runAt: 'document_start' }
-		]
-	);
 
+	if (! /^https?.*$/.test(url)) {
+		return; // ignore non-http(s) schemes (including "chrome://")
+	}
+
+	var host = get_hostname(url);
+
+	with_settings(host, function (settings) {
+		executeScripts(tabId,
+			[
+				{ code: "var css = '"+ addslashes((settings.css || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+				{ code: "var js = '"+ addslashes((settings.js || '').replace(/(\r\n|\n|\r)/gm,"")) +"';", runAt: 'document_start' },
+				{ file: "jquery.js", runAt: 'document_start' },
+				{ file: "styler.js", runAt: 'document_start' }
+			]
+		);
+	});
 });
