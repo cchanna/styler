@@ -52,8 +52,8 @@ $(function() {
 			save_settings(host, settings);
 			executeScripts(null,
 				[
-					{ code: "var css = "+ JSON.stringify(localStorage[host + '-css']) +";", runAt: 'document_start' },
-					{ code: "var js = "+ JSON.stringify(localStorage[host + '-js']) +";", runAt: 'document_start' },
+					{ code: "var css = "+ JSON.stringify(settings.css || '') +";", runAt: 'document_start' },
+					{ code: "var js = "+ JSON.stringify(settings.js || '') +";", runAt: 'document_start' },
 					{ file: "jquery.js", runAt: 'document_start' },
 					{ file: "styler.js", runAt: 'document_start' }
 				]
