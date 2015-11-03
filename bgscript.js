@@ -19,8 +19,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 	with_settings(host, function (settings) {
 		executeScripts(tabId,
 			[
-				{ code: "var css = atob('"+ btoa(localStorage[host + '-css']) +"');", runAt: 'document_start' },
-				{ code: "var js = atob('"+ btoa(localStorage[host + '-js']) +"');", runAt: 'document_start' },
+				{ code: "var css = "+ JSON.stringify(settings.css || '') +";", runAt: 'document_start' },
+				{ code: "var js = "+ JSON.stringify(settings.js || '') +";", runAt: 'document_start' },
 				{ file: "jquery.js", runAt: 'document_start' },
 				{ file: "styler.js", runAt: 'document_start' }
 			]
