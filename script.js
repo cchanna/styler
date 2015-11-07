@@ -48,8 +48,8 @@ $(function() {
 			settings.js = $('.js').val();
 			config['width'] = $('.width').val();
 			config['fontsize'] = $('.fontsize').val();
-			save_config(config);
-			save_settings(host, settings);
+			defer_save_config(config);
+			defer_save_settings(host, settings);
 			executeScripts(null,
 				[
 					{ code: "var css = "+ JSON.stringify(settings.css || '') +";", runAt: 'document_start' },
@@ -77,7 +77,7 @@ $(function() {
 				config['wrap'] = 0;
 				lineWrapping = false;
 			}
-			save_config(config);
+			defer_save_config(config);
 			init_codemirror(lineWrapping);
 		});
 
@@ -95,5 +95,22 @@ $(function() {
 			});
 		});
 	});
+
+	var _deferred = {};
+
+	function defer_save_config(config) {
+		_deferred.config = config;
+	}
+
+	function defer_save_settings(host, settings) {
+		_deferred.host = host;
+		_deferred.settings = settings;
+	}
+
+	var background = chrome.extension.getBackgroundPage();
+
+	addEventListener("unload", function (event) {
+		background.save(_deferred);
+	}, true);
 
 });

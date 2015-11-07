@@ -27,3 +27,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 		);
 	});
 });
+
+function save(deferred) {
+	if (deferred.config) {
+		save_config(deferred.config);
+	}
+	if (deferred.host) {
+		save_settings(deferred.host, deferred.settings);
+	}
+}
