@@ -14,7 +14,7 @@
 
 body {
 	font-family: Segoe UI, sans-serif;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 .host {
@@ -70,9 +70,30 @@ input[type='checkbox'] {
 .width, .height, .fontsize {
 	font-size: 12px;
 	vertical-align: middle;
-	margin: 0 3px;
+	margin: 0 5px;
 	width: 40px;
 	text-align: center;
+	padding: 2px 0px;
+}
+
+form {
+	margin: 0 5px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+input[type='submit'] {
+	padding: 4px 10px;
+	border: 0;
+	background: #0C4C8A;
+	color: #fff;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.optns {
+	text-transform: uppercase;
+	color: #999;
 }
 
 </style>
@@ -85,15 +106,17 @@ input[type='checkbox'] {
 	
 	<textarea class='css' id='css' placeholder='CSS'></textarea>
 	<textarea class='js' id='js' placeholder='JavaScript'></textarea>
-	<label for='wrap'>Word-wrap</label><input type='checkbox' class='wrap' name='wrap' value='1' id='wrap'>
-	<label for='width'>Editor width</label><input type='text' class='width' name='width' id='width' value='600' title='In pixels'>
-	<label for='fontsize'>Font size</label><input type='text' class='fontsize' name='fontsize' id='fontsize' value='14px' title='In pixels'>
-	<form action="https://bitpay.com/checkout" method="post" target="_blank">
-		<input type="hidden" name="action" value="checkout" />
-		<input type="hidden" name="posData" value="" />
-		<input type="hidden" name="data" value="18Jwbu9gwg4D9REYEv2xxGV/WdB/ZjK62PfAjo0fPqVeGh0Wbda81Ot3lL5HFwzsAPTaj6bmPDLUGit3H/fqvFzP5OksbzMfJJljgIZysOdvrnklp0kn4GzZEJgqXodVh9BdJUxhaylxf/inf/ub0A==" />
-		<input type="submit" value="Tip 0.001 BTC">
-	</form>
+	<div class='optns'>
+		<label for='wrap'>Word-wrap</label><input type='checkbox' class='wrap' name='wrap' value='1' id='wrap'>
+		<label for='width'>Editor width</label><input type='text' class='width' name='width' id='width' value='600' title='In pixels'>
+		<label for='fontsize'>Font size</label><input type='text' class='fontsize' name='fontsize' id='fontsize' value='14px' title='In pixels'>
+		<form action="https://bitpay.com/checkout" method="post" target="_blank">
+			<input type="hidden" name="action" value="checkout" />
+			<input type="hidden" name="posData" value="" />
+			<input type="hidden" name="data" value="18Jwbu9gwg4D9REYEv2xxGV/WdB/ZjK62PfAjo0fPqVeGh0Wbda81Ot3lL5HFwzsAPTaj6bmPDLUGit3H/fqvFzP5OksbzMfJJljgIZysOdvrnklp0kn4GzZEJgqXodVh9BdJUxhaylxf/inf/ub0A==" />
+			<input type="submit" value="TIP 0.001 BTC">
+		</form>
+	</div>
 
 </div>
 
